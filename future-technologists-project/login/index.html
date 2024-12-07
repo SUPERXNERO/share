@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل الدخول في تقنيون المستقبل</title>
+  <link rel="stylesheet" href="https://superxnero.github.io/assets/css/sx.css" />
+  <style class="realStyle" id="importStyle">
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:slnt,wght@-11..11,200..1000&display=swap');
+  </style>
+  <style class="realStyle">
+    body {
+      direction: rtl;
+      background: var(--theme-background);
+      font-family: "Cairo";
+    }
+    header {
+      background: var(--theme-box3);
+    }
+    #container {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: var(--theme-box);
+      border-radius: 10px;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    }
+    #themeToggleBtn {
+      position: relative;
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      background: var(--theme-box4);
+    }
+    #themeToggleBtn span {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: grid;
+      place-items: center;
+      width: 25px;
+      height: 25px;
+      pointer-events: none;
+      transition: .2s;
+    }
+    #themeToggleBtn svg {
+      width: 100%;
+      height: 100%;
+      fill: var(--theme-color);
+    }
+    #themeToggleBtn #sunIcon svg {
+      transform: scale(1.5);
+    }
+    [data-theme="light"] #themeToggleBtn #sunIcon {
+      opacity: 0;
+    }
+    [data-theme="dark"] #themeToggleBtn #moonIcon {
+      opacity: 0;
+    }
+    #registrationForm label {
+      display: block;
+      margin: 5px 0;
+      font-weight: bold;
+    }
+    #registrationForm > div {
+      margin: 10px 0;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid var(--theme-box4);
+      outline-color: var(--theme-box4);
+      border-radius: 4px;
+      font-size: 16px;
+      background: var(--theme-box4);
+    }
+    #phone, #password {
+      direction: ltr;
+    }
+    #registrationForm button {
+      width: 100%;
+      padding: 10px;
+      text-align: center;
+      background: var(--theme-button);
+    }
+    #registrationForm button:active {
+      filter: brightness(.8);
+    }
+    #dontHaveAccount {
+      margin-top: 30px;
+    }
+    #dontHaveAccount a {
+      color: var(--theme-button);
+      text-decoration-color: var(--theme-button);
+    }
+  </style>
+</head>
+<body>
+  <div id="container" class="registration-container">
+    <header>
+      <h2>تسجيل الدخول</h2>
+      <div id="themeToggleBtn" class="sxButton">
+        <span id="sunIcon" data-fetch="https://superxnero.github.io/assets/svgs/dark_500827.svg"></span>
+        <span id="moonIcon" data-fetch="https://superxnero.github.io/assets/svgs/dark_432159.svg"></span>
+      </div>
+    </header>
+    <form id="registrationForm">
+      <div>
+        <label for="phone">رقم الهاتف:</label>
+        <input type="tel" id="phone" required>
+      </div>
+      <div>
+        <label for="password:">كلمة المرور:</label>
+        <input type="password" id="password" required>
+      </div>
+      <button type="submit" class="sxButton">تسجيل الدخول</button>
+    </form>
+    <p id="dontHaveAccount">ليس لديك حساب! <a href="../sign-up/index.html">إنشاء حساب</a></p>
+  </div>
+
+  <script class="realScript" type="module" defer>
+    import {
+      OnChange
+    } from "https://superxnero.github.io/assets/libs/OnChange.js";
+    import {
+      ThemeManager
+    } from "https://superxnero.github.io/assets/libs/ThemeManager.js";
+    import {
+      FetchToElement
+    } from "https://superxnero.github.io/assets/libs/FetchToElement.js";
+    const q = (e)=> document.querySelector(e);
+    const qA = (e)=> document.querySelectorAll(e);
+    const root = document.documentElement;
+    const head = document.head;
+    const body = document.body;
+    const realPage = q("#realPage");
+    const container = q("#container");
+    const themeToggleBtn = q("#themeToggleBtn");
+
+    const themeManager = new ThemeManager({
+      saveAll: true,
+      baseUrl: "../",
+      defaultTheme: localStorage.getItem("theme"),
+      changeEvents: {
+        "theme": onThemeChange
+      }
+    });
+    const fetchToElement = new FetchToElement(true);
+
+    let mainData = {
+      //
+    };
+
+    themeToggleBtn.onclick = function() {
+      const theme = themeManager.theme === "dark" ? "light" : "dark";
+      themeManager.setTheme(theme);
+    }
+
+    function onThemeChange(theme) {
+      localStorage.setItem("theme", theme);
+    }
+
+    function getDatum(datum) {
+      return mainData[datum].value;
+    }
+
+    function setDatum(datum, value) {
+      mainData[datum].change(value);
+    }
+  </script>
+</body>
+</html>
