@@ -16,7 +16,7 @@
       font-family: "Cairo";
     }
     header {
-      background: var(--theme-box4);
+      background: var(--theme-box3);
     }
     #container {
       max-width: 600px;
@@ -31,7 +31,7 @@
       border-radius: 50%;
       width: 35px;
       height: 35px;
-      background: var(--theme-box4);
+      background: var(--theme-box3);
     }
     #themeToggleBtn span {
       position: absolute;
@@ -67,6 +67,22 @@
     #registrationForm > div {
       margin: 10px 0;
     }
+    .sxSelect .current {
+      background: var(--theme-box4);
+    }
+    #listOpenIcon {
+      position: absolute;
+      top: 50%;
+      left: 10px;
+      transform: translateY(-50%);
+    }
+    #listOpenIcon svg {
+      width: 25px;
+      height: 25px;
+    }
+    #listOpenIcon svg * {
+      fill: var(--theme-color) !important;
+    }
     input {
       width: 100%;
       padding: 10px;
@@ -75,7 +91,7 @@
       outline-color: var(--theme-box4);
       border-radius: 4px;
       font-size: 16px;
-      background: var(--theme-box3);
+      background: var(--theme-box4);
     }
     #phone, #password {
       direction: ltr;
@@ -88,6 +104,13 @@
     }
     #registrationForm button:active {
       filter: brightness(.8);
+    }
+    #haveAccount {
+      margin-top: 30px;
+    }
+    #haveAccount a {
+      color: var(--theme-button);
+      text-decoration-color: var(--theme-button);
     }
   </style>
 </head>
@@ -112,6 +135,7 @@
       <div>
         <label>المحافظة:</label>
         <div id="province" class="sxSelect">
+          <div id="listOpenIcon" data-fetch="https://superxnero.github.io/assets/svgs/arrow-down-up_521466.svg"></div>
           <div id="currentProvince" class="current">
             حضرموت
           </div>
@@ -182,6 +206,7 @@
       <div>
         <label>المستوى التعليمي:</label>
         <div id="educationLevel" class="sxSelect">
+          <div id="listOpenIcon" data-fetch="https://superxnero.github.io/assets/svgs/arrow-down-up_521466.svg"></div>
           <div id="currentEducationLevel" class="current">
             جامعي
           </div>
@@ -204,6 +229,7 @@
       </div>
       <button type="submit" class="sxButton">تسجيل</button>
     </form>
+    <p id="haveAccount">لديك حساب بالفعل! <a href="../login/index.html">تسجيل الدخول</a></p>
   </div>
 
   <script class="realScript" type="module" defer>
