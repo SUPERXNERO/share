@@ -242,6 +242,8 @@
     fetch("../dark.json").then((res)=>{
       console.log(res);
     })
+    
+    console.log(localStorage.getItem("theme"));
 
     const themeManager = new ThemeManager({
       saveAll: true,
