@@ -238,6 +238,10 @@
       current.textContent = id;
       setDatum("educationLevel", id);
     });
+    
+    fetch("../dark.json").then((res)=>{
+      console.log(res);
+    })
 
     const themeManager = new ThemeManager({
       saveAll: true,
