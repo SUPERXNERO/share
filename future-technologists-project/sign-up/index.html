@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>التسجيل في تقنيون المستقبل</title>
+  <link rel="stylesheet" href="https://superxnero.github.io/assets/css/sx.css" />
+  <style class="realStyle" id="importStyle">
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:slnt,wght@-11..11,200..1000&display=swap');
+  </style>
+  <style class="realStyle">
+    body {
+      direction: rtl;
+      background: var(--theme-background);
+      font-family: "Cairo";
+    }
+    #container {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: var(--theme-box);
+      border-radius: 10px;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    }
+    #registrationForm label {
+      display: block;
+      margin: 5px 0;
+      font-weight: bold;
+    }
+    #registrationForm > div {
+      margin: 10px 0;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid var(--theme-box4);
+      outline-color: var(--theme-box4);
+      border-radius: 4px;
+      font-size: 16px;
+      background: var(--theme-box3);
+    }
+    #phone, #password {
+      direction: ltr;
+    }
+    #registrationForm button {
+      width: 100%;
+      padding: 10px;
+      text-align: center;
+      background: var(--theme-button);
+    }
+    #registrationForm button:active {
+      filter: brightness(.8);
+    }
+  </style>
+</head>
+<body>
+  <div id="container" class="registration-container">
+    <h2>تسجيل حساب جديد</h2>
+    <form id="registrationForm">
+      <div>
+        <label for="name">الاسم الرباعي:</label>
+        <input type="text" id="name" required>
+      </div>
+      <div>
+        <label for="phone">رقم الهاتف:</label>
+        <input type="tel" id="phone" required>
+      </div>
+      <div>
+        <label>المحافظة:</label>
+        <div id="province" class="sxSelect">
+          <div id="currentProvince" class="current">
+            حضرموت
+          </div>
+          <div id="provinceList" class="list">
+            <div class="item" data-id="حضرموت">
+              حضرموت
+            </div>
+            <div class="item" data-id="المهرة">
+              المهرة
+            </div>
+            <div class="item" data-id="صنعاء">
+              صنعاء
+            </div>
+            <div class="item" data-id="عدن">
+              عدن
+            </div>
+            <div class="item" data-id="تعز">
+              تعز
+            </div>
+            <div class="item" data-id="الحديدة">
+              الحديدة
+            </div>
+            <div class="item" data-id="إب">
+              إب
+            </div>
+            <div class="item" data-id="ذمار">
+              ذمار
+            </div>
+            <div class="item" data-id="البيضاء">
+              البيضاء
+            </div>
+            <div class="item" data-id="شبوة">
+              شبوة
+            </div>
+            <div class="item" data-id="مارب">
+              مارب
+            </div>
+            <div class="item" data-id="الجوف">
+              الجوف
+            </div>
+            <div class="item" data-id="عمران">
+              عمران
+            </div>
+            <div class="item" data-id="صعدة">
+              صعدة
+            </div>
+            <div class="item" data-id="لحج">
+              لحج
+            </div>
+            <div class="item" data-id="أبين">
+              أبين
+            </div>
+            <div class="item" data-id="حجة">
+              حجة
+            </div>
+            <div class="item" data-id="ريمة">
+              ريمة
+            </div>
+            <div class="item" data-id="المحويت">
+              المحويت
+            </div>
+            <div class="item" data-id="الضالع">
+              الضالع
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <label>المستوى التعليمي:</label>
+        <div id="educationLevel" class="sxSelect">
+          <div id="currentEducationLevel" class="current">
+            جامعي
+          </div>
+          <div id="educationLevelList" class="list">
+            <div class="item" data-id="جامعي">
+              جامعي
+            </div>
+            <div class="item" data-id="ثانوي">
+              ثانوي
+            </div>
+            <div class="item" data-id="أساسي">
+              أساسي
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <label for="password:">كلمة المرور:</label>
+        <input type="password" id="password" required>
+      </div>
+      <button type="submit" class="sxButton">تسجيل</button>
+    </form>
+  </div>
+
+  <script class="realScript" type="module" defer>
+    import {
+      OnChange
+    } from "https://superxnero.github.io/assets/libs/OnChange.js";
+    import {
+      ThemeManager
+    } from "https://superxnero.github.io/assets/libs/ThemeManager.js";
+    import {
+      SxSelect
+    } from "https://superxnero.github.io/assets/js/sx.js";
+    import * as an from "https://superxnero.github.io/assets/libs/another.js";
+    const q = (e)=> document.querySelector(e);
+    const qA = (e)=> document.querySelectorAll(e);
+    const root = document.documentElement;
+    const head = document.head;
+    const body = document.body;
+    const realPage = q("#realPage");
+    const container = q("#container");
+
+    // ready elements
+    const province = new SxSelect(q("#province"), function(id, {
+      current
+    }) {
+      current.textContent = id;
+      setDatum("province", id);
+    });
+    const educationLevel = new SxSelect(q("#educationLevel"), function(id, {
+      current
+    }) {
+      current.textContent = id;
+      setDatum("educationLevel", id);
+    });
+
+    const themeManager = new ThemeManager({
+      saveAll: true,
+      baseUrl: "../",
+      defaultTheme: "dark"
+    });
+
+    let mainData = {
+      province: new OnChange(onProvinceChange),
+      educationLevel: new OnChange(onEducationLevelChange)
+    };
+    setDatum("province", "حضرموت");
+    setDatum("educationLevel", "جامعي");
+
+    function onProvinceChange(province) {
+      //
+    }
+
+    function onEducationLevelChange(educationLevel) {
+      //
+    }
+
+    function getDatum(datum) {
+      return mainData[datum].value;
+    }
+
+    function setDatum(datum, value) {
+      mainData[datum].change(value);
+    }
+
+    Element.prototype.allChildren = function(includeSelf = false) {
+      let children = Array.from(this.children);
+      children.forEach(child => {
+        children.push(...child.allChildren());
+      });
+      return includeSelf ? [this,
+        ...children]: children;
+    };
+
+
+    Element.prototype.offclick = function (fun,
+      other = {}) {
+      let element = this;
+
+      if (other == true) other = {
+        elementPlus: true
+      }
+      let conditon = other.conditon || 'true',
+      lockEvents = other.lockEvents || false,
+      elementPlus = other.elementPlus,
+      notLock = other.notLock,
+      clearEvent = other.clearEvent;
+      document.addEventListener('mouseup',
+        offClick);
+
+      let elements = [element];
+      if (elementPlus && elementPlus.v) {
+        if (an.isOneElement(elementPlus)) elements = [element,
+          elementPlus];
+        else elements = [element,
+          ...elementPlus];
+      }
+
+      if (lockEvents) {
+        if (!notLock) notLock = elements;
+        element.lockEvents('lock', notLock);
+      }
+
+      function offClick(events) {
+        let event = events || events.changedTouches[0];
+
+        if (elementPlus == true) {
+          removeEvent(event);
+          return;
+        }
+
+        let isNoClick = elements.length;
+        elements.forEach(element => {
+          if (event.target !== element) isNoClick--;
+          if (element.children) {
+            isNoClick += element.allChildren().length;
+            element.allChildren().forEach(child=> {
+              if (event.target !== child) isNoClick--;
+            });
+          }
+        });
+        var cond = typeof conditon == 'function' ? conditon(event): typeof conditon == 'boolean' ? conditon: '';
+        if (isNoClick === 0 && cond !== false || cond === true) removeEvent(event);
+      }
+      function removeEvent(event) {
+        document.removeEventListener('mouseup', offClick);
+        if (lockEvents) element.lockEvents('unlock', notLock);
+        if (typeof fun == 'function') fun(event);
+      }
+    }
+  </script>
+</body>
+</html>
