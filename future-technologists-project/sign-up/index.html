@@ -242,7 +242,7 @@
     const themeManager = new ThemeManager({
       saveAll: true,
       baseUrl: "../",
-      defaultTheme: "light",
+      defaultTheme: localStorage.getItem("theme"),
       changeEvents: {
         "theme": onThemeChange
       }
