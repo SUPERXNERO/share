@@ -23,6 +23,39 @@
       border-radius: 10px;
       box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
     }
+    #themeToggleBtn {
+      position: relative;
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      background: var(--theme-box4);
+    }
+    #themeToggleBtn span {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: grid;
+      place-items: center;
+      width: 25px;
+      height: 25px;
+      pointer-events: none;
+      transition: .2s;
+    }
+    #themeToggleBtn svg {
+      width: 100%;
+      height: 100%;
+      fill: var(--theme-color);
+    }
+    #themeToggleBtn #sunIcon svg {
+      transform: scale(1.5);
+    }
+    [data-theme="light"] #themeToggleBtn #sunIcon {
+      opacity: 0;
+    }
+    [data-theme="dark"] #themeToggleBtn #moonIcon {
+      opacity: 0;
+    }
     #registrationForm label {
       display: block;
       margin: 5px 0;
@@ -57,7 +90,13 @@
 </head>
 <body>
   <div id="container" class="registration-container">
-    <h2>تسجيل حساب جديد</h2>
+    <header>
+      <h2>تسجيل حساب جديد</h2>
+      <div id="themeToggleBtn" class="sxButton">
+        <span id="sunIcon" data-fetch="https://superxnero.github.io/assets/svgs/dark_500827.svg"></span>
+        <span id="moonIcon" data-fetch="https://superxnero.github.io/assets/svgs/dark_432159.svg"></span>
+      </div>
+    </header>
     <form id="registrationForm">
       <div>
         <label for="name">الاسم الرباعي:</label>
@@ -172,6 +211,9 @@
       ThemeManager
     } from "https://superxnero.github.io/assets/libs/ThemeManager.js";
     import {
+      FetchToElement
+    } from "https://superxnero.github.io/assets/libs/FetchToElement.js";
+    import {
       SxSelect
     } from "https://superxnero.github.io/assets/js/sx.js";
     import * as an from "https://superxnero.github.io/assets/libs/another.js";
@@ -182,6 +224,7 @@
     const body = document.body;
     const realPage = q("#realPage");
     const container = q("#container");
+    const themeToggleBtn = q("#themeToggleBtn");
 
     // ready elements
     const province = new SxSelect(q("#province"), function(id, {
@@ -200,8 +243,12 @@
     const themeManager = new ThemeManager({
       saveAll: true,
       baseUrl: "../",
-      defaultTheme: "dark"
+      defaultTheme: localStorage.getItem("theme"),
+      changeEvents: {
+        "theme": onThemeChange
+      }
     });
+    const fetchToElement = new FetchToElement(true);
 
     let mainData = {
       province: new OnChange(onProvinceChange),
@@ -210,12 +257,21 @@
     setDatum("province", "حضرموت");
     setDatum("educationLevel", "جامعي");
 
-    function onProvinceChange(province) {
+    themeToggleBtn.onclick = function() {
+      const theme = themeManager.theme === "dark" ? "light" : "dark";
+      themeManager.setTheme(theme);
+    }
+    
+    function onProvinceChange() {
+      //
+    }
+    
+    function onEducationLevelChange() {
       //
     }
 
-    function onEducationLevelChange(educationLevel) {
-      //
+    function onThemeChange(theme) {
+      localStorage.setItem("theme", theme);
     }
 
     function getDatum(datum) {
