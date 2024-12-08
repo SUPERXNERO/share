@@ -139,14 +139,11 @@
         <div id="province" class="sxSelect">
           <div id="listOpenIcon" data-fetch="https://superxnero.github.io/assets/svgs/arrow-down-up_521466.svg"></div>
           <div id="currentProvince" class="current">
-            حضرموت
+            أمانة العاصمة
           </div>
           <div id="provinceList" class="list">
-            <div class="item" data-id="حضرموت">
-              حضرموت
-            </div>
-            <div class="item" data-id="المهرة">
-              المهرة
+            <div class="item" data-id="أمانة العاصمة">
+              أمانة العاصمة
             </div>
             <div class="item" data-id="صنعاء">
               صنعاء
@@ -154,53 +151,62 @@
             <div class="item" data-id="عدن">
               عدن
             </div>
-            <div class="item" data-id="تعز">
-              تعز
-            </div>
-            <div class="item" data-id="الحديدة">
-              الحديدة
+            <div class="item" data-id="ذمار">
+              ذمار
             </div>
             <div class="item" data-id="إب">
               إب
             </div>
-            <div class="item" data-id="ذمار">
-              ذمار
+            <div class="item" data-id="عمران">
+              عمران
+            </div>
+            <div class="item" data-id="تعز">
+              تعز
             </div>
             <div class="item" data-id="البيضاء">
               البيضاء
             </div>
-            <div class="item" data-id="شبوة">
-              شبوة
-            </div>
-            <div class="item" data-id="مارب">
-              مارب
-            </div>
-            <div class="item" data-id="الجوف">
-              الجوف
-            </div>
-            <div class="item" data-id="عمران">
-              عمران
-            </div>
-            <div class="item" data-id="صعدة">
-              صعدة
-            </div>
-            <div class="item" data-id="لحج">
-              لحج
-            </div>
-            <div class="item" data-id="أبين">
-              أبين
-            </div>
             <div class="item" data-id="حجة">
               حجة
             </div>
-            <div class="item" data-id="ريمة">
-              ريمة
+            <div class="item" data-id="الضالع">
+              الضالع
             </div>
             <div class="item" data-id="المحويت">
               المحويت
             </div>
-            <div class="item" data-id="الضالع">
-              الضالع
+            <div class="item" data-id="مارب">
+              مأرب
+            </div>
+            <div class="item" data-id="أبين">
+              أبين
+            </div>
+            <div class="item" data-id="الحديدة">
+              الحديدة
+            </div>
+            <div class="item" data-id="لحج">
+              لحج
+            </div>
+            <div class="item" data-id="صعدة">
+              صعدة
+            </div>
+            <div class="item" data-id="حضرموت">
+              حضرموت
+            </div>
+            <div class="item" data-id="المهرة">
+              المهرة
+            </div>
+            <div class="item" data-id="الجوف">
+              الجوف
+            </div>
+            <div class="item" data-id="شبوة">
+              شبوة
+            </div>
+            <div class="item" data-id="ريمة">
+              ريمة
+            </div>
+            <div class="item" data-id="سقطرى">
+              سقطرى
             </div>
           </div>
         </div>
@@ -231,7 +237,9 @@
       </div>
       <button type="submit" class="sxButton">تسجيل</button>
     </form>
-    <p id="haveAccount">لديك حساب بالفعل! <a href="../login/index.html">تسجيل الدخول</a></p>
+    <p id="haveAccount">
+      لديك حساب بالفعل! <a href="../login/index.html">تسجيل الدخول</a>
+    </p>
   </div>
 
   <script class="realScript" type="module" defer>
@@ -288,14 +296,14 @@
     setDatum("educationLevel", "جامعي");
 
     themeToggleBtn.onclick = function() {
-      const theme = themeManager.theme === "dark" ? "light" : "dark";
+      const theme = themeManager.theme === "dark" ? "light": "dark";
       themeManager.setTheme(theme);
     }
-    
+
     function onProvinceChange() {
       //
     }
-    
+
     function onEducationLevelChange() {
       //
     }
