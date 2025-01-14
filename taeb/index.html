@@ -110,7 +110,12 @@
       data = await data.json();
 
       function sortByResult(array) {
-        return array.sort((a, b) => b.result - a.result);
+        return array.sort((a, b) => {
+          if (b.result === a.result) {
+            return a.name.localeCompare(b.name);
+          }
+          return b.result - a.result;
+        });
       }
 
       data = sortByResult(data).map((item, i)=> ({
@@ -119,16 +124,17 @@
         index: i,
         id: i
       }));
-      
+
       let intervalSearch;
-      
+
       searchField.oninput = function() {
         const value = searchField.value.trim();
-        
+
         clearTimeout(intervalSearch);
-        intervalSearch = setTimeout(()=>{
+        intervalSearch = setTimeout(()=> {
           fillTheTableBody(filterThem(value, data), value);
-        }, 500);
+        },
+          500);
       }
 
       function filterThem(text, data) {
@@ -153,8 +159,12 @@
           });
         } else {
           const ides = data.map((item)=>`${item.id}`);
-          const searchByName = data.map((item)=>({indexOf:item.name.indexOf(search), id:item.id}));
-          const searchByResult = data.map((item)=>({indexOf:`${item.result}`.indexOf(search),id:item.id}));
+          const searchByName = data.map((item)=>({
+            indexOf: item.name.indexOf(search), id: item.id
+          }));
+          const searchByResult = data.map((item)=>({
+            indexOf: `${item.result}`.indexOf(search), id: item.id
+          }));
           Object.values(tableBody.children).forEach((child)=> {
             if (ides.includes(child.dataset.id)) {
               child.classList.remove("ds-none");
@@ -172,7 +182,7 @@
                 marks.forEach((mark)=>mark.classList.remove("show"));
                 marks.slice(searchByItemResult.indexOf, search.length).forEach((mark)=>mark.classList.add("show"));
               }
-              
+
             } else {
               child.classList.add("ds-none");
             }
