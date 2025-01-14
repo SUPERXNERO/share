@@ -11,6 +11,13 @@
   <style class="realStyle">
     * {
       font-family: "Cairo";
+      user-select: auto;
+    }
+    body {
+      direction: rtl;
+    }
+    header {
+      flex-direction: row-reverse;
     }
     #container {
       overflow-y: scroll;
@@ -30,6 +37,18 @@
     td {
       background-color: var(--theme-box3);
     }
+    #searchField {
+      background: var(--theme-box);
+      border: 0;
+      outline: 0;
+      padding: 4px;
+    }
+    mark {
+      background: transparent;
+    }
+    mark.show {
+      background: var(--theme-warning);
+    }
   </style>
 </head>
 <body>
@@ -37,14 +56,15 @@
     <div id="main">
       <header>
         <h1 id="h1Title">ترتيب علامات الطب</h1>
+        <input type="text" id="searchField" placeholder="ابحث هنا..." />
       </header>
       <div id="container">
         <table>
           <thead>
             <tr>
-              <th>#</th>
-              <th>Name</th>
-              <th>Result</th>
+              <th>الترتيب</th>
+              <th>الاسم</th>
+              <th>النتيجة</th>
             </tr>
           </thead>
           <tbody id="table-body"></tbody>
@@ -57,6 +77,9 @@
     import {
       ThemeManager
     } from "https://superxnero.github.io/assets/libs/ThemeManager.js";
+    import {
+      FetchToElement
+    } from "https://superxnero.github.io/assets/libs/FetchToElement.js";
     import * as an from "https://superxnero.github.io/assets/libs/another.js";
     const q = (e)=> document.querySelector(e);
     const qA = (e)=> document.querySelectorAll(e);
@@ -64,6 +87,7 @@
     const head = document.head;
     const body = document.body;
     const realPage = q("#realPage");
+    const searchField = q("#searchField");
 
     // element variables
     const tableBody = q("#table-body");
@@ -76,6 +100,7 @@
         "theme": onThemeChange
       }
     });
+    const fetchToElement = new FetchToElement(true);
 
     async function fillTheTable() {
       let data = await fetch("./taeb.json");
@@ -85,22 +110,79 @@
         return array.sort((a, b) => b.result - a.result);
       }
 
-      data = sortByResult(data);
+      data = sortByResult(data).map((item, i)=> ({
+        name: item.name,
+        result: item.result,
+        index: i,
+        id: i
+      }));
+      
+      let intervalSearch;
+      
+      searchField.oninput = function() {
+        const value = searchField.value.trim();
+        
+        clearTimeout(intervalSearch);
+        intervalSearch = setTimeout(()=>{
+          fillTheTableBody(filterThem(value, data), value);
+        }, 500);
+      }
 
-      data.forEach((item, index) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-        <td>${index + 1}</td>
-        <td>${item.name}</td>
-        <td>${item.result}</td>
-        `;
-        tableBody.appendChild(row);
-      });
+      function filterThem(text, data) {
+        if (!isNaN(text) && `${text}`.length < 2) {
+          return data;
+        }
+        return data.filter((item)=>item.name.indexOf(text) !== -1 || item.result == text);
+      }
+
+      function fillTheTableBody(data, search) {
+        if (typeof search !== "string") {
+          tableBody.innerHTML = "";
+          data.forEach((item)=> {
+            const row = document.createElement('tr');
+            row.dataset.id = item.id;
+            row.innerHTML = `
+            <td>${item.index+1}</td>
+            <td>${item.name.split("").map((e)=>`<mark>${e}</mark>`).join("")}</td>
+            <td>${`${item.result}`.split("").map((e)=>`<mark>${e}</mark>`).join("")}</td>
+            `;
+            tableBody.appendChild(row);
+          });
+        } else {
+          const ides = data.map((item)=>`${item.id}`);
+          const searchByName = data.map((item)=>({indexOf:item.name.indexOf(search), id:item.id}));
+          const searchByResult = data.map((item)=>({indexOf:`${item.result}`.indexOf(search),id:item.id}));
+          Object.values(tableBody.children).forEach((child)=> {
+            if (ides.includes(child.dataset.id)) {
+              child.classList.remove("ds-none");
+              const searchByItemName = searchByName.filter((item)=>item.id == child.dataset.id)[0];
+              const searchByItemResult = searchByResult.filter((item)=>item.id == child.dataset.id)[0];
+              if (searchByItemName.indexOf !== -1) {
+                let marks = child.querySelectorAll("td")[1].querySelectorAll("mark");
+                marks = Object.values(marks);
+                marks.forEach((mark)=>mark.classList.remove("show"));
+                marks.slice(searchByItemName.indexOf, search.length).forEach((mark)=>mark.classList.add("show"));
+              }
+              if (searchByItemResult.indexOf !== -1) {
+                let marks = child.querySelectorAll("td")[2].querySelectorAll("mark");
+                marks = Object.values(marks);
+                marks.forEach((mark)=>mark.classList.remove("show"));
+                marks.slice(searchByItemResult.indexOf, search.length).forEach((mark)=>mark.classList.add("show"));
+              }
+              
+            } else {
+              child.classList.add("ds-none");
+            }
+          });
+        }
+      }
+      fillTheTableBody(data);
     }
     fillTheTable();
 
     function onThemeChange(theme) {
-      localStorage.setItem("theme", theme);
+      localStorage.setItem("theme",
+        theme);
     }
 
     function getDatum(datum) {
