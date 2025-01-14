@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ترتيب علامات الطب</title>
+  <link rel="stylesheet" href="/storage/5A67-DF85/GitHub/assets/css/sx.css" />
+  <style class="realStyle" id="importStyle">
+@import url('https://fonts.googleapis.com/css2?family=Cairo:slnt,wght@-11..11,200..1000&display=swap');
+  </style>
+  <style class="realStyle">
+    * {
+      font-family: "Cairo";
+    }
+    #container {
+      overflow-y: scroll;
+    }
+    table {
+      margin: 20px auto;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid var(--theme-color2);
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: var(--theme-box4);
+    }
+    td {
+      background-color: var(--theme-box3);
+    }
+  </style>
+</head>
+<body>
+  <div id="realPage">
+    <div id="main">
+      <header>
+        <h1 id="h1Title">ترتيب علامات الطب</h1>
+      </header>
+      <div id="container">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Result</th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script class="realScript" type="module" defer>
+    import {
+      ThemeManager
+    } from "/storage/5A67-DF85/GitHub/assets/libs/ThemeManager.js";
+    import * as an from "/storage/5A67-DF85/GitHub/assets/libs/another.js";
+    const q = (e)=> document.querySelector(e);
+    const qA = (e)=> document.querySelectorAll(e);
+    const root = document.documentElement;
+    const head = document.head;
+    const body = document.body;
+    const realPage = q("#realPage");
+
+    // element variables
+    const tableBody = q("#table-body");
+
+    const themeManager = new ThemeManager({
+      saveAll: true,
+      baseUrl: "/storage/5A67-DF85/GitHub/themes-content/public/",
+      defaultTheme: "dark",
+      changeEvents: {
+        "theme": onThemeChange
+      }
+    });
+
+    async function fillTheTable() {
+      let data = await fetch("./taeb.json");
+      data = await data.json();
+
+      function sortByResult(array) {
+        return array.sort((a, b) => b.result - a.result);
+      }
+
+      data = sortByResult(data);
+
+      data.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${item.name}</td>
+        <td>${item.result}</td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+    fillTheTable();
+
+    function onThemeChange(theme) {
+      localStorage.setItem("theme", theme);
+    }
+
+    function getDatum(datum) {
+      return mainData[datum].value;
+    }
+
+    function setDatum(datum, value) {
+      mainData[datum].change(value);
+    }
+  </script>
+</body>
+</html>
