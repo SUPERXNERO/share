@@ -13,7 +13,7 @@
       font-family: "Cairo";
       user-select: auto;
     }
-    
+
     #main {
       background: var(--theme-box);
     }
@@ -90,7 +90,9 @@
         <h1 id="h1Title">Grades of <span></span></h1>
         <input type="text" id="searchField" placeholder="Search here..." />
       </header>
-      <div id="sort-message">Click on a column header (Name, Sess, Exam, Result) to sort the table by that column.</div>
+      <div id="sort-message">
+        Click on a column header (Name, Sess, Exam, Result) to sort the table by that column.
+      </div>
       <div id="container">
         <table>
           <thead>
@@ -135,6 +137,9 @@
         "theme": onThemeChange
       }
     });
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('subject');
 
     async function fetchData() {
       try {
@@ -188,7 +193,7 @@
 
 
       tableBody.innerHTML = '';
-      
+
       sortedData.forEach((item, index) => {
         const row = document.createElement('tr');
         row.dataset.id = item.index;
