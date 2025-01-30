@@ -4,7 +4,7 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IT Grades</title>
-  <link rel="stylesheet" href="/storage/5A67-DF85/GitHub/assets/css/sx.css" />
+  <link rel="stylesheet" href="https://superxnero.github.io/assets/css/sx.css" />
   <style class="realStyle" id="importStyle">
 @import url('https://fonts.googleapis.com/css2?family=Cairo:slnt,wght@-11..11,200..1000&display=swap');
   </style>
@@ -112,9 +112,12 @@
 
   <script type="module">
     import {
+      OnChange
+    } from "https://superxnero.github.io/assets/libs/OnChange.js";
+    import {
       ThemeManager
-    } from "/storage/5A67-DF85/GitHub/assets/libs/themeManager.js"; // Adjust the path
-    import * as an from "/storage/5A67-DF85/GitHub/assets/libs/another.js"; // Adjust the path
+    } from "https://superxnero.github.io/assets/libs/themeManager.js"; // Adjust the path
+    import * as an from "https://superxnero.github.io/assets/libs/another.js"; // Adjust the path
     const q = (e) => document.querySelector(e);
     const qA = (e) => document.querySelectorAll(e);
     const root = document.documentElement;
@@ -125,40 +128,55 @@
     const tableBody = q("#table-body");
     const tableHeaders = qA('th[data-sort]');
 
-    let currentSort = 'result';
-    let data = [];
-    let intervalSearch;
-
     const themeManager = new ThemeManager({
       saveAll: true,
-      baseUrl: "/storage/5A67-DF85/GitHub/themes-content/public/",
-      defaultTheme: "dark",
-      changeEvents: {
-        "theme": onThemeChange
-      }
+      baseUrl: "https://superxnero.github.io/themes-content/public/",
+      defaultTheme: "dark"
     });
 
-    async function fetchData() {
-      try {
-        const response = await fetch('./engineering-science.json');
-        data = await response.json();
+    let mainData = {
+      subjectId: new OnChange(onSubjectIdChange),
+      subject: new OnChange(onSubjectChange),
+      data: new OnChange(onDataChange),
+      currentSort: new OnChange(onCurrentSortChange)
+    };
+    
+    setDatum("data", []);
+    setDatum("currentSort", "result");
+    
+    let intervalSearch;
 
-        data = data.map((item, index) => ({
-          ...item,
-          index: index,
-          result: Number(item.result),
-          sess: Number(item.sess),
-          exam: Number(item.exam),
-        }));
+    searchField.oninput = function() {
+      const value = searchField.value.trim();
+      clearTimeout(intervalSearch);
+      intervalSearch = setTimeout(()=> {
+        sortAndRenderTable(getDatum("currentSort"), value);
+      },
+        500);
+    };
 
-        sortAndRenderTable(currentSort);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
+    tableHeaders.forEach(header => {
+      header.addEventListener('click', () => {
+        setDatum("currentSort", header.dataset.sort);
+        sortAndRenderTable(getDatum("currentSort"), searchField.value.trim());
+      });
+    });
+
+    function getSubjectIdFromQuery() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const subjectId = urlParams.get('subject_id');
+      return subjectId;
+    }
+
+    if (getSubjectIdFromQuery()) {
+      setDatum("subjectId", getSubjectIdFromQuery());
+    } else {
+      setDatum("subjectId", "es");
     }
 
     function sortAndRenderTable(sortBy, search = '') {
-      let sortedData = [...data];
+      if (!getDatum("data")) return;
+      let sortedData = [...getDatum("data")];
 
       // Filter the data if a search query exists
       if (search) {
@@ -247,28 +265,58 @@
         });
       }
     }
-
-
-    searchField.oninput = function() {
-      const value = searchField.value.trim();
-      clearTimeout(intervalSearch);
-      intervalSearch = setTimeout(()=> {
-        sortAndRenderTable(currentSort, value);
-      },
-        500);
-    };
-
-    tableHeaders.forEach(header => {
-      header.addEventListener('click', () => {
-        currentSort = header.dataset.sort;
-        sortAndRenderTable(currentSort, searchField.value.trim());
-      });
-    });
-    function onThemeChange(theme) {
-      localStorage.setItem("theme",
-        theme);
+    
+    function onCurrentSortChange(currentSort) {
+      //
     }
-    fetchData();
+    
+    function onDataChange(data) {
+      //
+    }
+
+    async function onSubjectChange(subject) {
+      const h1TitleName = q("#h1Title span");
+      h1TitleName.textContent = subject.name;
+
+      try {
+        const response = await fetch(subject.path);
+        let json = await response.json();
+
+        json = json.map((item, index) => ({
+          ...item,
+          index: index,
+          result: Number(item.result),
+          sess: Number(item.sess),
+          exam: Number(item.exam),
+        }));
+        
+        setDatum("data", json);
+
+        sortAndRenderTable(getDatum("currentSort"));
+      } catch (error) {
+        console.error('Error fetching data:',
+          error);
+      }
+    }
+
+    async function onSubjectIdChange(subjectId) {
+      const res = await fetch("./subjects.json");
+      const json = await res.json();
+      const subject = json.find((e)=>e.id === subjectId);
+      if (subject) {
+        setDatum("subject", subject);
+      }
+    }
+
+    function getDatum(datum) {
+      return mainData[datum].value;
+    }
+
+    function setDatum(datum, value) {
+      mainData[datum].change(value);
+    }
+
+    //fetchData();
   </script>
 </body>
 </html>
