@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IT Grades</title>
+  <link rel="stylesheet" href="/storage/5A67-DF85/GitHub/assets/css/sx.css" />
+  <style class="realStyle" id="importStyle">
+@import url('https://fonts.googleapis.com/css2?family=Cairo:slnt,wght@-11..11,200..1000&display=swap');
+  </style>
+  <style class="realStyle">
+    * {
+      font-family: "Cairo";
+      user-select: auto;
+    }
+    
+    #main {
+      background: var(--theme-box);
+    }
+
+    body {
+      direction: ltr;
+    }
+
+    header {
+      flex-direction: row-reverse;
+    }
+
+    #container {
+      overflow-y: scroll;
+    }
+
+    table {
+      margin: var(--twenty-px) auto;
+      border-collapse: collapse;
+      width: 90%;
+      max-width: 1000px;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--theme-color2);
+      padding: var(--eight-px);
+      text-align: center;
+    }
+
+    th {
+      background-color: var(--theme-box4);
+      cursor: pointer;
+    }
+
+    td {
+      background-color: var(--theme-box3);
+    }
+
+    #searchField {
+      background: var(--theme-box);
+      border: 0;
+      outline: 0;
+      padding: var(--four-px);
+    }
+
+    ::placeholder {
+      color: var(--theme-color2);
+    }
+
+    mark {
+      background: transparent;
+    }
+
+    mark.show {
+      background: var(--theme-warning);
+    }
+
+    #sort-message {
+      text-align: center;
+      margin: 10px 0;
+      border: 0 solid var(--theme-button);
+      border-width: 1px 0;
+      padding: var(--six-px);
+      background: var(--theme-box3);
+      color: var(--theme-color2);
+    }
+  </style>
+</head>
+<body>
+  <div id="realPage">
+    <div id="main">
+      <header>
+        <h1 id="h1Title">IT (Engineering Science)</h1>
+        <input type="text" id="searchField" placeholder="Search here..." />
+      </header>
+      <div id="sort-message">Click on a column header (Name, Sess, Exam, Result) to sort the table by that column.</div>
+      <div id="container">
+        <table>
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th data-sort="name">Name</th>
+              <th data-sort="sess">Sess</th>
+              <th data-sort="exam">Exam</th>
+              <th data-sort="result">Result</th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import {
+      ThemeManager
+    } from "/storage/5A67-DF85/GitHub/assets/libs/themeManager.js"; // Adjust the path
+    import * as an from "/storage/5A67-DF85/GitHub/assets/libs/another.js"; // Adjust the path
+    const q = (e) => document.querySelector(e);
+    const qA = (e) => document.querySelectorAll(e);
+    const root = document.documentElement;
+    const head = document.head;
+    const body = document.body;
+    const realPage = q("#realPage");
+    const searchField = q("#searchField");
+    const tableBody = q("#table-body");
+    const tableHeaders = qA('th[data-sort]');
+
+    let currentSort = 'result';
+    let data = [];
+    let intervalSearch;
+
+    const themeManager = new ThemeManager({
+      saveAll: true,
+      baseUrl: "/storage/5A67-DF85/GitHub/themes-content/public/",
+      defaultTheme: "dark",
+      changeEvents: {
+        "theme": onThemeChange
+      }
+    });
+
+    async function fetchData() {
+      try {
+        const response = await fetch('./engineering-science.json');
+        data = await response.json();
+
+        data = data.map((item, index) => ({
+          ...item,
+          index: index,
+          result: Number(item.result),
+          sess: Number(item.sess),
+          exam: Number(item.exam),
+        }));
+
+        sortAndRenderTable(currentSort);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+
+    function sortAndRenderTable(sortBy, search = '') {
+      let sortedData = [...data];
+
+      // Filter the data if a search query exists
+      if (search) {
+        sortedData = sortedData.filter(item =>
+          item.name.toLowerCase().includes(search.toLowerCase()) ||
+          String(item.result).includes(search)
+        );
+      }
+
+      sortedData.sort((a, b) => {
+        if (sortBy === 'name') {
+          return a.name.localeCompare(b.name);
+        } else if (sortBy === 'result' && (isNaN(a.result) || isNaN(b.result))) {
+          return 0;
+        } else if (sortBy === 'sess' && (isNaN(a.sess) || isNaN(b.sess))) {
+          return 0;
+        } else if (sortBy === 'exam' && (isNaN(a.exam) || isNaN(b.exam))) {
+          return 0;
+        } else if (sortBy === 'result') {
+          return (b.result || 0) - (a.result || 0);
+        } else if (sortBy === 'sess') {
+          return (b.sess || 0) - (a.sess || 0);
+        } else if (sortBy === 'exam') {
+          return (b.exam || 0) - (a.exam || 0);
+        }
+
+        return 0;
+      });
+
+
+      tableBody.innerHTML = '';
+      
+      sortedData.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.dataset.id = item.index;
+        row.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${item.name.split("").map((e)=>`<mark>${e}</mark>`).join("")}</td>
+        <td>${`${item.sess || ''}`.split("").map((e)=>`<mark>${e}</mark>`).join("")}</td>
+        <td>${`${item.exam || ''}`.split("").map((e)=>`<mark>${e}</mark>`).join("")}</td>
+        <td>${`${item.result || ''}`.split("").map((e)=>`<mark>${e}</mark>`).join("")}</td>
+        `;
+        tableBody.appendChild(row);
+      });
+
+      highlightSearch(search);
+    }
+
+    function highlightSearch(search) {
+      if (search) {
+        const rows = tableBody.querySelectorAll('tr');
+        rows.forEach(row => {
+          let marksName = row.querySelectorAll("td")[0].querySelectorAll("mark");
+          marksName = Object.values(marksName);
+          marksName.forEach((mark)=>mark.classList.remove("show"));
+
+          let marksSess = row.querySelectorAll("td")[1].querySelectorAll("mark");
+          marksSess = Object.values(marksSess);
+          marksSess.forEach((mark)=>mark.classList.remove("show"));
+
+          let marksExam = row.querySelectorAll("td")[2].querySelectorAll("mark");
+          marksExam = Object.values(marksExam);
+          marksExam.forEach((mark)=>mark.classList.remove("show"));
+          let marksResult = row.querySelectorAll("td")[3].querySelectorAll("mark");
+          marksResult = Object.values(marksResult);
+          marksResult.forEach((mark)=>mark.classList.remove("show"));
+
+          const nameIndex = row.cells[0].textContent.toLowerCase().indexOf(search.toLowerCase());
+          const sessIndex = row.cells[1].textContent.indexOf(search);
+          const examIndex = row.cells[2].textContent.indexOf(search);
+          const resultIndex = row.cells[3].textContent.indexOf(search);
+
+
+          if (nameIndex !== -1) {
+            marksName.slice(nameIndex, nameIndex + search.length).forEach(mark => mark.classList.add('show'));
+          }
+          if (sessIndex !== -1) {
+            marksSess.slice(sessIndex, sessIndex + search.length).forEach(mark => mark.classList.add('show'));
+          }
+          if (examIndex !== -1) {
+            marksExam.slice(examIndex, examIndex + search.length).forEach(mark => mark.classList.add('show'));
+          }
+          if (resultIndex !== -1) {
+            marksResult.slice(resultIndex, resultIndex + search.length).forEach(mark => mark.classList.add('show'));
+          }
+        });
+      }
+    }
+
+
+    searchField.oninput = function() {
+      const value = searchField.value.trim();
+      clearTimeout(intervalSearch);
+      intervalSearch = setTimeout(()=> {
+        sortAndRenderTable(currentSort, value);
+      },
+        500);
+    };
+
+    tableHeaders.forEach(header => {
+      header.addEventListener('click', () => {
+        currentSort = header.dataset.sort;
+        sortAndRenderTable(currentSort, searchField.value.trim());
+      });
+    });
+    function onThemeChange(theme) {
+      localStorage.setItem("theme",
+        theme);
+    }
+    fetchData();
+  </script>
+</body>
+</html>
