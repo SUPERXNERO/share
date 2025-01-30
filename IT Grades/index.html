@@ -282,7 +282,8 @@
     }
     
     function onCurrentSortChange(currentSort) {
-      //
+      tableHeaders.forEach((header)=> header.classList.remove("active"));
+      Object.values(tableHeaders).find((header)=> header.dataset.sort === currentSort).classList.add("active");
     }
     
     function onDataChange(data) {
