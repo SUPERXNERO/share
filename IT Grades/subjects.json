@@ -3,6 +3,10 @@
   "name": "Eng.Sci.",
   "path": "./engineering-science.json"
 },{
+  "id": "ep",
+  "name": "Eng.Phys.",
+  "path": "./engineering-physics.json"
+},{
   "id": "result",
   "name": "Result",
   "path": "./result.json"
